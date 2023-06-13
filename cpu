@@ -1,0 +1,37 @@
+import psutil
+import time
+from multiprocessing import Pool, cpu_count
+import os
+
+
+def cpu_space():
+    print("Percentage usage of each CPU core:")
+    for i, percentage in enumerate(psutil.cpu_percent(percpu=True)):
+        print(f"Core {i}: {percentage}%")
+    print(f"Total percentage of CPU usage: {psutil.cpu_percent()}%")
+def busy_time(m):
+    
+    if m <= 1:
+        return m
+    else:
+        return busy_time(m-1) + busy_time(m-2)
+
+
+if __name__ == "__main__":
+    try:
+        while True:
+            cpu_space()
+            user_input = input("Enter one number (enter 'Exit' for close): ")
+            if user_input.lower() == 'exit':
+                break
+
+           m = int(user_input)
+            print(f"Calculating {m}...")
+
+            with Pool(cpu_count()) as p:
+                p.map(busy_time, [n for _ in range(cpu_count())])
+
+            print("done.")
+
+    except Exception as e:
+        print(f"An error has occurred: {e}")
